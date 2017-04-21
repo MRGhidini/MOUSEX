@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<!--
+Titulo = Ferramenta para auxiliar nos comandos psvimg
+Desenvolvido por Robert Ghidini 2017
+
+Este software pode ser modificado e distribuído sob os termos
+da licença do MIT
+
+-->
+<html lang="en">
+<head>
+<title>PSVIMT TOOLS</title>
+<HTA:APPLICATION
+  APPLICATIONNAME="MOUSEX"
+  ID="AtticNumerals"
+  VERSION="1.00"
+  SCROLL="no"
+  MAXIMIZEBUTTON="No"
+  MINIMIZEBUTTON="Yes"
+  SINGLEINSTANCE="Yes"
+  SHOWINTASKBAR="no"
+  INNERBORDER="no"
+  ICON="RG132x32.ico"
+  CONTEXTMENU="Yes"
+  BORDER="thin"
+  BORDERSTYLE="normal"
+  />
+ 
+<style type="text/css">
+body
+{
+	background-color: #108010;
+	color: black;
+	filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#40F0C0',EndColorStr='#108010');
+	font-family: arial, sans-serif;
+	font-size: 12pt;
+	margin: 0;
+	padding: 0;
+}
+ 
+a {
+	color: darkgray;
+}
+ 
+input[type=text] {
+	background-color: white;
+	border: 1px solid silver;
+	color: black;
+	height: 20px;
+	text-align: right;
+	width: 210px;
+}
+ 
+th {
+	text-align: left;
+}
+ 
+.Button {
+	font-weight: bold;
+	height: 25px;
+	width: 147px;
+}
+ 
+.Center {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+ 
+.Input {
+	background-color: white;
+	border: 1px solid silver;
+	color: black;
+	height: 22px;
+	text-align: right;
+	width: 212px;
+}
+ 
+.Right {
+	text-align: right;
+}
+</style>
+</head>
+ 
+<script language="VBScript">
+
+Sub Window_OnLoad
+	AppName.innerHTML    = AtticNumerals.ApplicationName
+	AppVersion.innerHTML = AtticNumerals.Version
+	document.title       = AtticNumerals.ApplicationName & " " & AtticNumerals.Version	
+	
+	Dim splashWindowWidth, splashWindowHeight, splashWindowLeft, splashWindowTop
+	
+	splashWindowWidth  = 450
+	splashWindowHeight = 250
+	splashWindowLeft   = 200
+	splashWindowTop    = 100
+	
+	splashWindowLeft = (window.screen.availWidth - splashWindowWidth) / 2
+	splashWindowTop  = (window.screen.availHeight - splashWindowHeight) / 2
+	
+	window.moveTo splashWindowLeft, splashWindowTop
+	window.resizeTo splashWindowWidth, splashWindowHeight
+	
+'	Call RunScript()
+End Sub
+
+Class TecladoKey
+    Public  Esc,Enter,P,F8
+    Private Sub Class_Initialize
+        Esc = 27
+        Enter = 13
+        P = 80
+        F8 = 119
+    End Sub
+End Class
+
+Sub CheckKey
+
+Dim Teclado
+Set Teclado = New TecladoKey
+
+  If window.event.keyCode = Teclado.Esc Then 
+  	MsgBox "Mouse automatico interrompido" , vbExclamation , "Aviso"
+  
+	strComputer = "."	
+	Set objNetwork = CreateObject("Wscript.Network")	
+	Set objWMIService = GetObject("winmgmts:" _
+	    & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2")	
+	''' Processo que será verificado '''''''
+	Set colProcesses = objWMIService.ExecQuery _
+	    ("Select * from Win32_Process Where Name = 'cmd.exe'")	
+	    '("Select * from Win32_Process Where Name = 'mshta.exe'")
+	''' elimina o processo definido '''
+	For each Processo in ColProcesses
+	   Processo.Terminate()
+	Next
+	
+	Set colProcesses = nothing
+  	window.Close
+  End If
+	  
+End Sub
+
+Function MouseXX()
+
+Dim Shell : Set Shell = CreateObject("WScript.Shell") 
+	
+	Dim tempo
+	tempo = InputBox("Digite o tempo em segudos, para ficar mexendo o mouse", "Tempo em Segundos", "")
+
+	    
+	Dim dteWait, cont
+		atual = Now()
+		dteWait = DateAdd("s", tempo, Now())
+		cont = 10
+		
+		document.getElementById("TempoIni").innerHTML = "Mouse iniciado em ( " & atual & " )"
+		document.getElementById("TempoTer").innerHTML = "Mouse vai parar de mexer em ( " & dteWait & " )"
+		
+		Do Until (Now() > dteWait)
+			Shell.Run "RunDll32.exe user32.dll,SetCursorPos "&cont&","&cont&""
+			
+			cont = cont + 1
+			
+			strComputer = "."	
+			Set objNetwork = CreateObject("Wscript.Network")	
+			Set objWMIService = GetObject("winmgmts:" _
+			    & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2")	
+			''' Processo que será verificado '''''''
+			Set colProcesses = objWMIService.ExecQuery _
+			    ("Select * from Win32_Process Where Name = 'cmd.exe'")			
+			For each Processo in ColProcesses
+				If Processo.Name = "cmd.exe" Then 				
+	   				Processo.Terminate()
+	   				MsgBox "Programa Interrompido" , vbExclamation , "Stop"
+					strComputer2 = "."	
+					Set objNetwork2 = CreateObject("Wscript.Network")	
+					Set objWMIService2 = GetObject("winmgmts:" _
+					    & "{impersonationLevel=impersonate}!\\" & strComputer2 & "\root\cimv2")	
+					''' Processo que será verificado '''''''
+					Set colProcesses2 = objWMIService.ExecQuery _
+					    ("Select * from Win32_Process Where Name = 'mshta.exe'")
+					For each Processo2 in ColProcesses2
+						Processo2.Terminate()
+					Next
+				End if
+	   				
+			Next
+			
+			If (Now() > dteWait) Then 
+				MsgBox "Tempo do mouse atingido, o programa vai ser fechado" , vbExclamation , "Aviso"
+				window.Close
+			End If
+			
+		Loop
+		
+Set Shell = Nothing
+End Function 
+
+Sub RunScript
+ '	For count = 0 to 10
+		setTimeout "MouseXX",300
+'	Next	
+End Sub 
+
+Sub FecharX
+	window.Close
+End Sub
+
+	
+</script>
+
+<body onKeyUp="CheckKey">
+ 
+<div style="height: 200px; margin: auto; width: 400px;">
+ 
+<table style="height: 150px; width: 400px;">
+<tr>
+	<th colspan="7"><center>( WIN + R, Digite cmd e enter para interromper )</div></center></th>
+</tr>
+<tr>
+	<th colspan="7"><center><div id="TempoIni"></div></center></th>
+</tr>
+<tr>
+	<th colspan="7"><center><div id="TempoTer"></div></center></th>
+</tr>
+<tr>
+	<th colspan="7"><center><input type="button" class="Button" value="Executar" onclick="RunScript" /></center>&nbsp; <center><input type="button" class="Button" value="Fechar" onclick="FecharX" /></center></th>
+</tr>
+</table>
+ 
+<center><span id="AppName">Application</span>,&nbsp; V. <span id="AppVersion">0.00</span> &copy; 2017, By Ghidini<br />
+<a href="#" onClick="LinkCanal()">By Robert Ghidini</a></center>
+ 
+</div>
+ 
+</body>
+</html>
