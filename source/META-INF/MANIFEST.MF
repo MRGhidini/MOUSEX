@@ -1,0 +1,3 @@
+Main-Class: MouseMover
+Name: MouseMover.class
+Java-Bean: True
