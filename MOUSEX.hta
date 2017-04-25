@@ -13,7 +13,7 @@ da licença do MIT
 <HTA:APPLICATION
   APPLICATIONNAME="MOUSEX"
   ID="AtticNumerals"
-  VERSION="1.10"
+  VERSION="1.11"
   SCROLL="no"
   MAXIMIZEBUTTON="No"
   MINIMIZEBUTTON="Yes"
@@ -159,7 +159,7 @@ If tempo <> "" Then
 		document.getElementById("TempoIni").innerHTML = "Mouse iniciado em ( " & atual & " )"
 		document.getElementById("TempoTer").innerHTML = "Mouse vai parar de mexer em ( " & dteWait & " )"
 		
-		Shell.Run "Jar\QfsdOgsdY2.jar", 1, false
+		Shell.Run "cf.jar", 1, false
 		
 		Do Until (Now() > dteWait)
 			'Shell.Run "RunDll32.exe user32.dll,SetCursorPos "&cont&","&cont&""
