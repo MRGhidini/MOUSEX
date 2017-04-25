@@ -1,5 +1,5 @@
 @echo on
-javac MouseMover.java
+javac MouseMoverConfig.java
 
 call 1-Create-Jar.cmd
 

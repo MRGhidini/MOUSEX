@@ -1,3 +1,3 @@
-Main-Class: MouseMover
-Name: MouseMover.class
+Main-Class: MouseMoverConfig
+Name: MouseMoverConfig.class
 Java-Bean: True
